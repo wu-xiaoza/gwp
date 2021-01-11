@@ -1,4 +1,4 @@
-module ch_6
+module ch_06
 
 go 1.15
 

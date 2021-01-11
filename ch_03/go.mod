@@ -1,4 +1,4 @@
-module ch_3
+module ch_03
 
 go 1.15
 
