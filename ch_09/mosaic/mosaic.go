@@ -33,8 +33,10 @@ func (db *DB) nearest(target [3]float64) string {
 
 func resize(in image.Image, newWidth int) image.NRGBA {
 	bounds := in.Bounds()
+	//Dx returns r's width.
 	width := bounds.Dx()
 	ratio := width / newWidth
+	//NewNRGBA returns a new NRGBA image with the given bounds.
 	out := image.NewNRGBA(image.Rect(bounds.Min.X/ratio, bounds.Min.X/ratio, bounds.Max.X/ratio, bounds.Max.Y/ratio))
 	for y, j := bounds.Min.Y, bounds.Min.Y; y < bounds.Max.Y; y, j = y+ratio, j+1 {
 		for x, i := bounds.Min.X, bounds.Min.X; x < bounds.Max.X; x, i = x+ratio, i+1 {
@@ -46,10 +48,14 @@ func resize(in image.Image, newWidth int) image.NRGBA {
 }
 
 func averageColor(img image.Image) [3]float64 {
+	//Bounds returns the domain for which At can return non-zero color. The bounds do not necessarily contain the point (0, 0).
 	bounds := img.Bounds()
 	r, g, b := 0.0, 0.0, 0.0
 	for y := bounds.Min.Y; y < bounds.Max.Y; y++ {
 		for x := bounds.Min.X; x < bounds.Max.X; x++ {
+			//RGBA returns the alpha-premultiplied red, green, blue and alpha values for the color. Each value ranges within [0, 0xffff], but is represented by a uint32 so that multiplying by a blend factor up to 0xffff will not overflow.
+			// An alpha-premultiplied color component c has been scaled by alpha (a), so has valid values 0 <= c <= a.
+			//At returns the color of the pixel at (x, y). At(Bounds().Min.X, Bounds().Min.Y) returns the upper-left pixel of the grid. At(Bounds().Max.X-1, Bounds().Max.Y-1) returns the lower-right one.
 			r1, g1, b1, _ := img.At(x, y).RGBA()
 			//计算给定图片平均颜色
 			r, g, b = r+float64(r1), g+float64(g1), b+float64(b1)
